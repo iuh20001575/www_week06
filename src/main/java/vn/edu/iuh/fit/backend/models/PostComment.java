@@ -15,6 +15,7 @@ import java.util.Set;
 @Data
 public class PostComment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
@@ -38,4 +39,15 @@ public class PostComment {
 
     @OneToMany(mappedBy = "parent")
     private Set<PostComment> postComments;
+
+    public PostComment(Post post, User user, PostComment parent, String title, Boolean published, Instant createdAt, Instant publishedAt, String content) {
+        this.post = post;
+        this.user = user;
+        this.parent = parent;
+        this.title = title;
+        this.published = published;
+        this.createdAt = createdAt;
+        this.publishedAt = publishedAt;
+        this.content = content;
+    }
 }

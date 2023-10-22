@@ -15,6 +15,7 @@ import java.util.Set;
 @Data
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 50, name = "first_name")
     private String firstName;
@@ -41,4 +42,21 @@ public class User {
     private Set<PostComment> comments;
     @OneToMany(mappedBy = "author")
     private Set<Post> posts;
+
+    public User(Long id) {
+        this.id = id;
+    }
+
+    public User(String firstName, String middleName, String lastName, String mobile, String email, String passwordHash, Instant registeredAt, Instant lastLogin, String intro, String profile) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.mobile = mobile;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.registeredAt = registeredAt;
+        this.lastLogin = lastLogin;
+        this.intro = intro;
+        this.profile = profile;
+    }
 }
