@@ -2,8 +2,9 @@ package vn.edu.iuh.fit.backend.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.util.Set;
@@ -12,7 +13,8 @@ import java.util.Set;
 @Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +41,19 @@ public class User {
     private String profile;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private Set<PostComment> comments;
     @OneToMany(mappedBy = "author")
+    @ToString.Exclude
     private Set<Post> posts;
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setComments(Set<PostComment> comments) {
+        this.comments = comments;
+    }
 
     public User(Long id) {
         this.id = id;

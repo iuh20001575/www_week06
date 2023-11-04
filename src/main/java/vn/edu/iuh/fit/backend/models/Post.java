@@ -1,9 +1,7 @@
 package vn.edu.iuh.fit.backend.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.Set;
@@ -12,7 +10,9 @@ import java.util.Set;
 @Table(name = "post")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +41,10 @@ public class Post {
     private String content;
 
     @OneToMany(mappedBy = "post")
+    @ToString.Exclude
     private Set<PostComment> postComments;
     @OneToMany(mappedBy = "parent")
+    @ToString.Exclude
     private Set<Post> posts;
 
     public Post(Long id) {

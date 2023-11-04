@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import vn.edu.iuh.fit.backend.models.Post;
 import vn.edu.iuh.fit.backend.models.PostComment;
 import vn.edu.iuh.fit.backend.models.User;
-import vn.edu.iuh.fit.backend.repositories.PostRepository;
+import vn.edu.iuh.fit.backend.repositories.PostCommentRepository;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,15 +19,15 @@ import java.util.Random;
 public class PostCommentTests {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostCommentRepository postCommentRepository;
 
     @PostConstruct
     void insert() {
         Random random = new Random();
-        for (int i = 1; i<= 200; i++) {
+        for (int i = 1; i <= 200; i++) {
             PostComment postComment = new PostComment(
-                     new Post(random.nextLong(11),
-                    new User(random.nextLong(11),
+                    new Post(random.nextLong(11)),
+                    new User(random.nextLong(11)),
                     null,
                     LoremIpsum.getInstance().getTitle(50),
                     true,
@@ -35,12 +35,14 @@ public class PostCommentTests {
                     Instant.now(),
                     LoremIpsum.getInstance().getParagraphs(100, 500)
             );
+
+            postCommentRepository.save(postComment);
         }
     }
 
     @Test
     void contextLoads() {
-        List<Post> posts = postRepository.findAll();
+        List<PostComment> posts = postCommentRepository.findAll();
 
         Assertions.assertFalse(posts.isEmpty());
     }
