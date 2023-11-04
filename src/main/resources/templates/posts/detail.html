@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.getTitle()}"></title>
+    <meta name="title" th:content="${post.getMetaTitle()}">
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}">
+    <style>
+        .line-clamp-5 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 5;
+        }
+    </style>
+</head>
+<body>
+    <main class="container-fluid">
+        <h1 th:text="${post.getTitle()}"></h1>
+        <div class="d-flex">
+            <div>
+                Author:
+                <strong th:text="${post.getAuthor().getFirstName() + ' ' + post.getAuthor().getMiddleName() + ' ' + post.getAuthor().getLastName()}"></strong>
+            </div>
+            &nbsp;-&nbsp;
+            <span th:text="${post.getUpdatedAt() != null} ? ${post.getUpdatedAt()} : ${post.getCreatedAt()}"></span>
+        </div>
+        <p class="mt-4 mb-0 line-clamp-5 post-content" th:text="${post.getContent()}"></p>
+        <button class="btn btn-link px-0 read-more">Read more</button>
+    </main>
+
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/postDetail.js}"></script>
+</body>
+</html>

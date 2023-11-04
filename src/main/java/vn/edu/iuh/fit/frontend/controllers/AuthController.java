@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,7 +23,7 @@ public class AuthController {
     @Autowired
     private PostRepository postRepository;
 
-    @GetMapping(value = {"/", "/index"})
+    @GetMapping(value = {"/", "/index", "/posts"})
     public ModelAndView index(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         int pageNum = page.orElse(1);
         int sizeNum = size.orElse(10);
@@ -46,6 +47,23 @@ public class AuthController {
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("login");
+
+        return modelAndView;
+    }
+
+    @GetMapping(value = {"/posts/{id}"})
+    public ModelAndView postDetail(@PathVariable("id") Long id) {
+        Optional<Post> post = postRepository.findById(id);
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        if (post.isEmpty())
+            modelAndView.setViewName("notFound");
+        else {
+            modelAndView.addObject("post", post.get());
+
+            modelAndView.setViewName("posts/detail");
+        }
 
         return modelAndView;
     }

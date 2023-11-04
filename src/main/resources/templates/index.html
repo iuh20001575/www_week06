@@ -22,8 +22,8 @@
             <div class="col-6" th:each="post : ${posts}">
                 <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
                     <h4>
-                    <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getTitle()}"></a>
-                </h4>
+                        <a th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}"></a>
+                    </h4>
                     <div>
                         Author:
                         <strong th:text="${post.getAuthor().getFirstName() + ' ' + post.getAuthor().getMiddleName() + ' ' + post.getAuthor().getLastName()}"></strong>
