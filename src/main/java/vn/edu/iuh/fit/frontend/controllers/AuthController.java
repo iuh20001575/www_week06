@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.frontend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import vn.edu.iuh.fit.backend.models.Post;
+import vn.edu.iuh.fit.backend.models.PostComment;
+import vn.edu.iuh.fit.backend.repositories.PostCommentRepository;
 import vn.edu.iuh.fit.backend.repositories.PostRepository;
 
 import java.util.Optional;
@@ -20,8 +24,11 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping(name = "/")
 public class AuthController {
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     @GetMapping(value = {"/", "/index", "/posts"})
     public ModelAndView index(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
@@ -30,7 +37,7 @@ public class AuthController {
 
         PageRequest pageable = PageRequest.of(pageNum-1, sizeNum, Sort.by("publishedAt"));
 
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findAllByPublished(true, pageable);
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -52,17 +59,28 @@ public class AuthController {
     }
 
     @GetMapping(value = {"/posts/{id}"})
-    public ModelAndView postDetail(@PathVariable("id") Long id) {
-        Optional<Post> post = postRepository.findById(id);
-
+    public ModelAndView postDetail(@PathVariable("id") String id) {
         ModelAndView modelAndView = new ModelAndView();
 
-        if (post.isEmpty())
-            modelAndView.setViewName("notFound");
-        else {
-            modelAndView.addObject("post", post.get());
+        try {
+            Long idLong = Long.parseLong(id);
+            Optional<Post> post = postRepository.findById(idLong);
 
-            modelAndView.setViewName("posts/detail");
+
+            if (post.isPresent()) {
+                PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("createdAt").descending());
+
+                Page<PostComment> comments = postCommentRepository.findAllByPostId(idLong, pageRequest);
+                System.out.println(comments);
+
+                modelAndView.addObject("post", post.get());
+                modelAndView.addObject("comments", comments);
+
+                modelAndView.setViewName("posts/detail");
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            modelAndView.setViewName("notFound");
         }
 
         return modelAndView;
