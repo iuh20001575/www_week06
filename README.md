@@ -2,7 +2,7 @@
 - [Home Page](#home-page)
 - [Post Page](#post-page)
 - ~~[Add Post Page](#add-post-page)~~
-- ~~[Login Page](#login-page)~~
+- [Login Page](#login-page)
 - ~~[Registry Page](#registry-page)~~
 
 ## Home Page
@@ -11,4 +11,7 @@
 
 ## Post Page
 ### Show detail of post, comments of post, ~~load more comments, show children comments, comment, reply comment~~
-![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_PostPage.jpeg "Home page")
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_PostPage.jpeg "Post page")
+
+## Login Page
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_LoginPage.jpeg "Login page")
