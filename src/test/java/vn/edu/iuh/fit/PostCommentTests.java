@@ -28,7 +28,7 @@ public class PostCommentTests {
             PostComment postComment = new PostComment(
                     new Post(4L),
                     new User(random.nextLong(11)+1),
-                    new PostComment(1017L),
+                    new PostComment(1012L),
                     LoremIpsum.getInstance().getTitle(10),
                     true,
                     Instant.now(),

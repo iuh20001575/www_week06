@@ -92,6 +92,11 @@
                         <div th:replace="::com (${comment.getPostComments()})"></div>
                     </div>
                 </div>
+
+                <!-- Load more comments -->
+                <div th:if="${comments.number + 1 < comments.totalPages}">
+                    <a th:href="@{/posts/{id}(id=${post.getId()}, page=${pageNext})}" class="btn btn-link">More comments</a>
+                </div>
             </div>
         </section>
     </main>
