@@ -197,10 +197,13 @@ public class AuthController {
             return modelAndView;
         }
 
+        postComment.setId(null);
         postComment.setPost(new Post(postId));
         postComment.setPublished(true);
         postComment.setCreatedAt(Instant.now());
         postComment.setUser((User) object);
+        if (postComment.getContent() != null && postComment.getContent().isEmpty())
+            postComment.setContent(null);
 
         postCommentRepository.save(postComment);
 

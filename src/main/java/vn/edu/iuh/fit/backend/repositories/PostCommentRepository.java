@@ -11,6 +11,6 @@ import vn.edu.iuh.fit.backend.models.PostComment;
 import java.util.List;
 
 public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
-    @Query(value = "FROM PostComment WHERE post.id = :postId AND published = true")
+    @Query(value = "FROM PostComment WHERE post.id = :postId AND published = true AND parent is null")
     Page<PostComment> findAllByPostId(@Param("postId") Long postId, Pageable pageable);
 }

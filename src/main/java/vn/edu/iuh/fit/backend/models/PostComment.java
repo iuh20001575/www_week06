@@ -41,6 +41,10 @@ public class PostComment {
     @ToString.Exclude
     private Set<PostComment> postComments;
 
+    public PostComment(Long id) {
+        this.id = id;
+    }
+
     public PostComment(Post post, User user, PostComment parent, String title, Boolean published, Instant createdAt, Instant publishedAt, String content) {
         this.post = post;
         this.user = user;
