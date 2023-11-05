@@ -24,16 +24,16 @@ public class PostCommentTests {
     @PostConstruct
     void insert() {
         Random random = new Random();
-        for (int i = 1; i <= 200; i++) {
+        for (int i = 1; i <= 10; i++) {
             PostComment postComment = new PostComment(
-                    new Post(random.nextLong(11)),
-                    new User(random.nextLong(11)),
+                    new Post(4L),
+                    new User(random.nextLong(11)+1),
                     null,
-                    LoremIpsum.getInstance().getTitle(50),
+                    LoremIpsum.getInstance().getTitle(10),
                     true,
                     Instant.now(),
                     Instant.now(),
-                    LoremIpsum.getInstance().getParagraphs(100, 500)
+                    LoremIpsum.getInstance().getParagraphs(2, 4)
             );
 
             postCommentRepository.save(postComment);

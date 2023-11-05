@@ -91,8 +91,10 @@ public class AuthController {
     }
 
     @GetMapping(value = {"/posts/{id}"})
-    public ModelAndView postDetail(@PathVariable("id") String id, HttpSession session) {
+    public ModelAndView postDetail(@PathVariable("id") String id, @RequestParam("page") Optional<Integer> page, HttpSession session, Model model) {
         ModelAndView modelAndView = new ModelAndView();
+
+        Integer pageNum = page.orElse(1);
 
         try {
             Long idLong = Long.parseLong(id);
@@ -100,14 +102,16 @@ public class AuthController {
 
 
             if (post.isPresent()) {
-                PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("createdAt").descending());
+                PageRequest pageRequest = PageRequest.of(0, 5 * pageNum, Sort.by("createdAt").descending());
 
                 Page<PostComment> comments = postCommentRepository.findAllByPostId(idLong, pageRequest);
-                System.out.println(comments);
+                PostComment postComment = new PostComment();
 
                 modelAndView.addObject("post", post.get());
                 modelAndView.addObject("comments", comments);
+                modelAndView.addObject("postComment", postComment);
                 modelAndView.addObject("user", session.getAttribute("user"));
+                modelAndView.addObject("pageNext", comments.getSize() / 5 + 1);
 
                 modelAndView.setViewName("posts/detail");
             }
@@ -180,5 +184,27 @@ public class AuthController {
         postRepository.save(post);
 
         return "redirect:/index";
+    }
+
+    @PostMapping("/posts/{id}/comment")
+    public ModelAndView addComment(@ModelAttribute("postComment") PostComment postComment, @PathVariable("id") Long postId, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+
+        Object object = session.getAttribute("user");
+
+        if (object == null) {
+            modelAndView.setViewName("redirect:/login");
+            return modelAndView;
+        }
+
+        postComment.setPost(new Post(postId));
+        postComment.setPublished(true);
+        postComment.setCreatedAt(Instant.now());
+        postComment.setUser((User) object);
+
+        postCommentRepository.save(postComment);
+
+        modelAndView.setViewName("redirect:/posts/" + postId);
+        return modelAndView;
     }
 }
