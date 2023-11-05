@@ -95,4 +95,11 @@ public class WwwWeek06Application {
             postCommentRepository.findAll().forEach(System.out::println);
         };
     }
+
+    //    @Bean
+    CommandLineRunner hashPass() {
+        return args -> {
+            System.out.println(BCrypt.withDefaults().hashToString(5, "123".toCharArray()));
+        };
+    }
 }

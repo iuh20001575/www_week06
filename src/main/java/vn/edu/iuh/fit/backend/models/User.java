@@ -1,10 +1,7 @@
 package vn.edu.iuh.fit.backend.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.Set;
@@ -14,6 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
 public class User {
     @Id
@@ -70,5 +68,10 @@ public class User {
         this.lastLogin = lastLogin;
         this.intro = intro;
         this.profile = profile;
+    }
+
+    public User(String email, String passwordHash) {
+        this.email = email;
+        this.passwordHash = passwordHash;
     }
 }
