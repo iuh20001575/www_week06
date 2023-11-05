@@ -24,35 +24,39 @@
 </head>
 <body>
     <main class="container-fluid">
-        <h1 th:text="${post.getTitle()}"></h1>
-        <div class="d-flex">
-            <div>
-                Author:
-                <strong th:text="${post.getAuthor().getFirstName() + ' ' + post.getAuthor().getMiddleName() + ' ' + post.getAuthor().getLastName()}"></strong>
-            </div>
-            &nbsp;-&nbsp;
-            <span th:text="${post.getUpdatedAt() != null} ? ${post.getUpdatedAt()} : ${post.getCreatedAt()}"></span>
-        </div>
-        <p class="mt-4 mb-0 line-clamp-5 post-content" th:text="${post.getContent()}"></p>
-        <button class="btn btn-link px-0 read-more">Read more</button>
+        <header th:insert="~{components/header}"></header>
 
-        <!--comments-->
-        <div class="mt-5">
-            <h3 class="mt-3">Comments</h3>
-
-            <div class="mt-3" th:each="comment : ${comments}" th:object="${comment.user}">
-                <h4 th:text="${comment.getTitle()}"></h4>
-                <h6 class="fw-bold text-primary mb-1" th:text="*{firstName + ' ' + middleName + ' ' + lastName}"></h6>
-                <p class="text-muted small mb-0">
-                    Shared publicly - <span th:text="${comment.getPublishedAt()}"></span>
-                </p>
-                <p class="mt-3 mb-4 line-clamp-2" th:text="${comment.getContent()}"></p>
-<!--                <a href="#!" class="d-flex align-items-center me-3">-->
-<!--                    <i class="far fa-comment-dots me-2"></i>-->
-<!--                    <p class="mb-0">Comment</p>-->
-<!--                </a>-->
+        <section>
+            <h1 th:text="${post.getTitle()}"></h1>
+            <div class="d-flex">
+                <div>
+                    Author:
+                    <strong th:text="${post.getAuthor().getFirstName() + ' ' + post.getAuthor().getMiddleName() + ' ' + post.getAuthor().getLastName()}"></strong>
+                </div>
+                &nbsp;-&nbsp;
+                <span th:text="${post.getUpdatedAt() != null} ? ${post.getUpdatedAt()} : ${post.getCreatedAt()}"></span>
             </div>
-        </div>
+            <p class="mt-4 mb-0 line-clamp-5 post-content" th:text="${post.getContent()}"></p>
+            <button class="btn btn-link px-0 read-more">Read more</button>
+
+            <!--comments-->
+            <div class="mt-5">
+                <h3 class="mt-3">Comments</h3>
+
+                <div class="mt-3" th:each="comment : ${comments}" th:object="${comment.user}">
+                    <h4 th:text="${comment.getTitle()}"></h4>
+                    <h6 class="fw-bold text-primary mb-1" th:text="*{firstName + ' ' + middleName + ' ' + lastName}"></h6>
+                    <p class="text-muted small mb-0">
+                        Shared publicly - <span th:text="${comment.getPublishedAt()}"></span>
+                    </p>
+                    <p class="mt-3 mb-4 line-clamp-2" th:text="${comment.getContent()}"></p>
+                    <!--                <a href="#!" class="d-flex align-items-center me-3">-->
+                    <!--                    <i class="far fa-comment-dots me-2"></i>-->
+                    <!--                    <p class="mb-0">Comment</p>-->
+                    <!--                </a>-->
+                </div>
+            </div>
+        </section>
     </main>
 
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>

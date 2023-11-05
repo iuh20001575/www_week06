@@ -35,7 +35,7 @@ public class AuthController {
     private UserRepository userRepository;
 
     @GetMapping(value = {"/", "/index", "/posts"})
-    public ModelAndView index(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+    public ModelAndView index(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size, HttpSession session) {
         int pageNum = page.orElse(1);
         int sizeNum = size.orElse(10);
 
@@ -46,6 +46,7 @@ public class AuthController {
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.addObject("posts", posts);
+        modelAndView.addObject("user", session.getAttribute("user"));
         modelAndView.addObject("pages", IntStream.rangeClosed(1, posts.getTotalPages()).boxed().collect(Collectors.toList()));
 
         modelAndView.setViewName("index");
@@ -72,6 +73,8 @@ public class AuthController {
 
             return "login";
         }
+
+        httpSession.setAttribute("user", userOptional.get());
 
         return "redirect:/index";
     }
@@ -102,5 +105,12 @@ public class AuthController {
         }
 
         return modelAndView;
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession httpSession) {
+        httpSession.invalidate();
+
+        return "redirect:index";
     }
 }
