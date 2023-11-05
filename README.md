@@ -1,7 +1,7 @@
 # Table of Contents
 - [Home Page](#home-page)
 - [Post Page](#post-page)
-- ~~[Add Post Page](#add-post-page)~~
+- [Add Post Page](#add-post-page)
 - [Login Page](#login-page)
 - ~~[Registry Page](#registry-page)~~
 
@@ -15,3 +15,6 @@
 
 ## Login Page
 ![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_LoginPage.jpeg "Login page")
+
+## Add Post Page
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_AddPostPage.jpeg "Add Post page")

@@ -19,6 +19,8 @@ import vn.edu.iuh.fit.backend.repositories.PostCommentRepository;
 import vn.edu.iuh.fit.backend.repositories.PostRepository;
 import vn.edu.iuh.fit.backend.repositories.UserRepository;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,8 +47,14 @@ public class AuthController {
 
         ModelAndView modelAndView = new ModelAndView();
 
+//        Login default dev
+        Optional<User> user = userRepository.findById(1L);
+        session.setAttribute("user", user.get());
+        modelAndView.addObject("user", user.get());
+//        Comment when dev
+//        modelAndView.addObject("user", session.getAttribute("user"));
+
         modelAndView.addObject("posts", posts);
-        modelAndView.addObject("user", session.getAttribute("user"));
         modelAndView.addObject("pages", IntStream.rangeClosed(1, posts.getTotalPages()).boxed().collect(Collectors.toList()));
 
         modelAndView.setViewName("index");
@@ -116,5 +124,61 @@ public class AuthController {
         httpSession.invalidate();
 
         return "redirect:index";
+    }
+
+    @GetMapping("/posts/add")
+    public String addPost(HttpSession session, Model model) {
+        Object object = session.getAttribute("user");
+
+        if (object == null) {
+            return "redirect:/login";
+        }
+
+        User user = (User) object;
+
+        List<Post> posts = postRepository.findAllByAuthorAndPublished(user, true);
+
+        Post post = new Post();
+        Post parentPost = new Post();
+        post.setParent(parentPost);
+
+        model.addAttribute("post", post);
+        model.addAttribute("parentPost", parentPost);
+        model.addAttribute("posts", posts);
+        model.addAttribute("user", user);
+
+        return "posts/add";
+    }
+
+    @PostMapping("/posts/add")
+    public String addPost(@ModelAttribute("post") Post post, @ModelAttribute("parentPost") Post parentPost, HttpSession session) {
+        Object object = session.getAttribute("user");
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+
+        if (parentPost.getId() != null) {
+            Optional<Post> parentPostOptional = postRepository.findById(parentPost.getId());
+
+            post.setParent(parentPostOptional.get());
+        }
+
+        User user = (User) object;
+        post.setId(null);
+        post.setAuthor(user);
+        post.setPublished(true);
+        post.setCreatedAt(Instant.now());
+        post.setPublishedAt(Instant.now());
+
+        if (parentPost.getId() != null) {
+            Optional<Post> parentPostOptional = postRepository.findById(parentPost.getId());
+
+            parentPostOptional.ifPresent(post::setParent);
+        }
+
+        postRepository.save(post);
+
+        return "redirect:/index";
     }
 }

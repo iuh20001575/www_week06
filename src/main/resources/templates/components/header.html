@@ -9,6 +9,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/index}">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/posts/add}">Add post</a>
+                </li>
             </ul>
             <div class="d-flex gap-3 align-items-center">
                 <h6 class="mb-0" th:if="${user != null}" th:text="${user.getFirstName() + ' ' + user.getMiddleName() + ' ' + user.getLastName()}"></h6>
