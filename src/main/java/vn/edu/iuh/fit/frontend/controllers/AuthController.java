@@ -4,7 +4,6 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,12 +28,15 @@ import java.util.stream.IntStream;
 @RequestMapping(name = "/")
 public class AuthController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private PostCommentRepository postCommentRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final PostCommentRepository postCommentRepository;
+    private final UserRepository userRepository;
+
+    public AuthController(PostRepository postRepository, PostCommentRepository postCommentRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.postCommentRepository = postCommentRepository;
+        this.userRepository = userRepository;
+    }
 
     @GetMapping(value = {"/", "/index", "/posts"})
     public ModelAndView index(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size, HttpSession session) {
@@ -48,11 +50,11 @@ public class AuthController {
         ModelAndView modelAndView = new ModelAndView();
 
 //        Login default dev
-        Optional<User> user = userRepository.findById(1L);
-        session.setAttribute("user", user.get());
-        modelAndView.addObject("user", user.get());
+//        Optional<User> user = userRepository.findById(1L);
+//        session.setAttribute("user", user.get());
+//        modelAndView.addObject("user", user.get());
 //        Comment when dev
-//        modelAndView.addObject("user", session.getAttribute("user"));
+        modelAndView.addObject("user", session.getAttribute("user"));
 
         modelAndView.addObject("posts", posts);
         modelAndView.addObject("pages", IntStream.rangeClosed(1, posts.getTotalPages()).boxed().collect(Collectors.toList()));
@@ -91,7 +93,7 @@ public class AuthController {
     }
 
     @GetMapping(value = {"/posts/{id}"})
-    public ModelAndView postDetail(@PathVariable("id") String id, @RequestParam("page") Optional<Integer> page, HttpSession session, Model model) {
+    public ModelAndView postDetail(@PathVariable("id") String id, @RequestParam("page") Optional<Integer> page, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
 
         Integer pageNum = page.orElse(1);
@@ -106,10 +108,12 @@ public class AuthController {
 
                 Page<PostComment> comments = postCommentRepository.findAllByPostId(idLong, pageRequest);
                 PostComment postComment = new PostComment();
+                PostComment parenPostComment = new PostComment();
 
                 modelAndView.addObject("post", post.get());
                 modelAndView.addObject("comments", comments);
                 modelAndView.addObject("postComment", postComment);
+                modelAndView.addObject("parenPostComment", parenPostComment);
                 modelAndView.addObject("user", session.getAttribute("user"));
                 modelAndView.addObject("pageNext", comments.getSize() / 5 + 1);
 
@@ -165,7 +169,7 @@ public class AuthController {
         if (parentPost.getId() != null) {
             Optional<Post> parentPostOptional = postRepository.findById(parentPost.getId());
 
-            post.setParent(parentPostOptional.get());
+            parentPostOptional.ifPresent(post::setParent);
         }
 
         User user = (User) object;
@@ -187,7 +191,7 @@ public class AuthController {
     }
 
     @PostMapping("/posts/{id}/comment")
-    public ModelAndView addComment(@ModelAttribute("postComment") PostComment postComment, @PathVariable("id") Long postId, HttpSession session) {
+    public ModelAndView addComment(@ModelAttribute("postComment") PostComment postComment, @ModelAttribute("parent-comment") String parentCommentId, @PathVariable("id") Long postId, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
 
         Object object = session.getAttribute("user");
@@ -204,6 +208,14 @@ public class AuthController {
         postComment.setUser((User) object);
         if (postComment.getContent() != null && postComment.getContent().isEmpty())
             postComment.setContent(null);
+
+        if (!parentCommentId.isEmpty()) {
+            long parentCommentIdLong = Long.parseLong(parentCommentId);
+
+            PostComment parentPostComment = new PostComment(parentCommentIdLong);
+
+            postComment.setParent(parentPostComment);
+        }
 
         postCommentRepository.save(postComment);
 

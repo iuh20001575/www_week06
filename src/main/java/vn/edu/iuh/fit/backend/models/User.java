@@ -45,14 +45,6 @@ public class User {
     @ToString.Exclude
     private Set<Post> posts;
 
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
-
-    public void setComments(Set<PostComment> comments) {
-        this.comments = comments;
-    }
-
     public User(Long id) {
         this.id = id;
     }
@@ -68,10 +60,5 @@ public class User {
         this.lastLogin = lastLogin;
         this.intro = intro;
         this.profile = profile;
-    }
-
-    public User(String email, String passwordHash) {
-        this.email = email;
-        this.passwordHash = passwordHash;
     }
 }

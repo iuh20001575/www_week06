@@ -7,10 +7,6 @@
 
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}">
     <style>
-        .none {
-            display: none;
-        }
-
         .line-clamp-2 {
             overflow: hidden;
             display: -webkit-box;
@@ -25,11 +21,13 @@
             -webkit-line-clamp: 5;
         }
 
+        .reply-comment.show > form,
         .nested-comments.show > div,
         .nested-comments > button {
             display: block;
         }
 
+        .reply-comment > form,
         .nested-comments.show > button,
         .nested-comments > div {
             display: none;
@@ -91,6 +89,29 @@
 
                         <div th:replace="::com (${comment.getPostComments()})"></div>
                     </div>
+
+                    <!-- Reply comment -->
+                    <div class="reply-comment mx-5 px-2 border border-4 border-bottom-0 border-top-0 border-end-0 border-info">
+                        <button class="btn btn-link px-0"
+                                th:data-comment-id="${comment.getId()}"
+                                th:data-post-id="${post.getId()}"
+                                onclick="replyComment(this)">
+                            Reply
+                        </button>
+
+                        <form th:action="@{/posts/{id}/comment(id=${post.getId()})}" method="post" class="mt-3">
+                            <input type="hidden" name="parent-comment" th:value="${comment.getId()}">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput1" required th:field="${postComment.title}">
+                                <label for="floatingInput1">Comment Title</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" id="floatingTextarea2" th:field="${postComment.content}"></textarea>
+                                <label for="floatingTextarea2">Comment Content</label>
+                            </div>
+                            <button class="btn btn-primary">Comment</button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Load more comments -->
@@ -107,7 +128,13 @@
         const reliesBtn = document.querySelectorAll('.reply-btn');
 
         reliesBtn.forEach(replyBtn =>replyBtn.addEventListener('click', e =>
-            e.target.parentElement.classList.add('show')))
+            e.target.parentElement.classList.add('show')));
+
+        const replyComment = (button) => {
+            const parentElement = button.parentElement;
+
+            parentElement.classList.add('show');
+        };
     </script>
 </body>
 </html>

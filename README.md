@@ -10,7 +10,7 @@
 ![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_HomePage.jpeg "Home page")
 
 ## Post Page
-### Show detail of post, comments of post, load more comments, comment, show children comments, ~~reply comment~~
+### Show detail of post, comments of post, load more comments, comment, show children comments, reply comment
 ![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_PostPage.jpeg "Post page")
 
 ## Login Page
@@ -18,3 +18,5 @@
 
 ## Add Post Page
 ![Alt text](https://thaoanhhaa1.github.io/www_images/Lab06_AddPostPage.jpeg "Add Post page")
+
+## Registry Page
