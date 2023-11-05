@@ -55,8 +55,11 @@ public class AuthController {
     }
 
     @GetMapping(value = {"/login"})
-    public String login(Model model) {
+    public String login(Model model, HttpSession session) {
         User user = new User();
+
+        if (session.getAttribute("user") != null)
+            return "redirect:/index";
 
         model.addAttribute("user", user);
 
@@ -80,7 +83,7 @@ public class AuthController {
     }
 
     @GetMapping(value = {"/posts/{id}"})
-    public ModelAndView postDetail(@PathVariable("id") String id) {
+    public ModelAndView postDetail(@PathVariable("id") String id, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
 
         try {
@@ -96,6 +99,7 @@ public class AuthController {
 
                 modelAndView.addObject("post", post.get());
                 modelAndView.addObject("comments", comments);
+                modelAndView.addObject("user", session.getAttribute("user"));
 
                 modelAndView.setViewName("posts/detail");
             }
